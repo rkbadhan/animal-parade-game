@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './App.css';
 
 const AnimalParadeCounter = () => {
   const [currentLevel, setCurrentLevel] = useState(1);
@@ -26,6 +27,7 @@ const AnimalParadeCounter = () => {
 
   useEffect(() => {
     generateChallenge();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLevel]);
 
   const generateChallenge = () => {
@@ -306,17 +308,6 @@ const AnimalParadeCounter = () => {
           </div>
         </div>
       </div>
-      
-      <style jsx>{`
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
-        }
-        .animate-shake {
-          animation: shake 0.5s ease-in-out;
-        }
-      `}</style>
     </div>
   );
 };
