@@ -29,32 +29,26 @@ const AnimalParadeCounter = () => {
   }, [currentLevel]);
 
   const generateChallenge = () => {
-    // Progressive difficulty
     const baseTargetCount = Math.min(2 + Math.floor(currentLevel / 2), 6);
     const totalAnimals = Math.min(12 + currentLevel * 2, 24);
     const animalTypes = Math.min(3 + Math.floor(currentLevel / 3), 6);
     
-    // Select random animal types for this level
     const selectedTypes = animals.slice(0, animalTypes);
     const target = selectedTypes[Math.floor(Math.random() * selectedTypes.length)];
     
-    // Generate animal grid - ensure we have MORE target animals than needed
     const grid = [];
-    const actualTargetAnimals = baseTargetCount + Math.floor(Math.random() * 3) + 1; // Always more than target
+    const actualTargetAnimals = baseTargetCount + Math.floor(Math.random() * 3) + 1;
     
-    // Add target animals (more than we need to select)
     for (let i = 0; i < actualTargetAnimals; i++) {
       grid.push({ ...target, id: `target-${i}`, isTarget: true });
     }
     
-    // Add other animals
     for (let i = 0; i < totalAnimals - actualTargetAnimals; i++) {
       const otherTypes = selectedTypes.filter(a => a.emoji !== target.emoji);
       const randomAnimal = otherTypes[Math.floor(Math.random() * otherTypes.length)];
       grid.push({ ...randomAnimal, id: `other-${i}`, isTarget: false });
     }
     
-    // Shuffle the grid
     for (let i = grid.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [grid[i], grid[j]] = [grid[j], grid[i]];
@@ -77,10 +71,8 @@ const AnimalParadeCounter = () => {
   const clickAnimal = (clickedAnimal, index) => {
     if (gameState !== 'counting') return;
     
-    // If already selected this animal, ignore
     if (selectedAnimals.includes(index)) return;
     
-    // If we've already selected enough, show feedback
     if (selectedAnimals.length >= targetCount) {
       setTryingToSelectMore(true);
       showSoundEffect(index, 'Stop! You have enough!');
@@ -89,15 +81,12 @@ const AnimalParadeCounter = () => {
     }
     
     if (clickedAnimal.isTarget) {
-      // Correct animal clicked
       const newSelected = [...selectedAnimals, index];
       setSelectedAnimals(newSelected);
       
-      // Add bridge light
       const newLights = [...bridgeLights, index];
       setBridgeLights(newLights);
       
-      // Show sound effect with count
       showSoundEffect(index, `${clickedAnimal.sound} #${newSelected.length}`);
       
       if (newSelected.length === targetCount) {
@@ -109,7 +98,6 @@ const AnimalParadeCounter = () => {
         }, 500);
       }
     } else {
-      // Wrong animal clicked - show gentle feedback
       setWrongAttempts(prev => [...prev, index]);
       showSoundEffect(index, `No! Find ${targetAnimal.name}s!`);
       
@@ -150,7 +138,6 @@ const AnimalParadeCounter = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-200 to-green-200 p-4">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-6">
           <h1 className="text-4xl font-bold text-purple-800 mb-2">Animal Selection Challenge</h1>
           <div className="text-xl font-semibold text-blue-700">
@@ -158,7 +145,6 @@ const AnimalParadeCounter = () => {
           </div>
         </div>
 
-        {/* Challenge Instructions */}
         {gameState === 'instruction' && targetAnimal && (
           <div className="text-center mb-6 bg-yellow-100 rounded-3xl p-6 border-4 border-yellow-400">
             <div className="text-8xl mb-4">{targetAnimal.emoji}</div>
@@ -180,10 +166,8 @@ const AnimalParadeCounter = () => {
           </div>
         )}
 
-        {/* Game Area */}
         <div className="bg-white rounded-3xl p-6 shadow-2xl mb-6">
           
-          {/* Target Animal Reminder & Progress */}
           {gameState === 'counting' && targetAnimal && (
             <div className="text-center mb-4 bg-purple-100 rounded-2xl p-4">
               <div className="text-3xl font-bold text-purple-800 mb-2">
@@ -205,16 +189,13 @@ const AnimalParadeCounter = () => {
             </div>
           )}
 
-          {/* Bridge */}
           <div className="relative mb-8">
             <div className="h-24 bg-gradient-to-r from-amber-600 to-amber-800 rounded-lg relative">
-              {/* Bridge planks */}
               {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="absolute h-full w-3 bg-amber-900 opacity-30" 
                      style={{ left: `${i * 8}%` }} />
               ))}
               
-              {/* Bridge lights */}
               {bridgeLights.map((lightIndex, i) => (
                 <div key={i} 
                      className="absolute top-2 w-8 h-8 bg-yellow-400 rounded-full animate-pulse border-2 border-yellow-600 flex items-center justify-center text-purple-800 font-bold"
@@ -223,14 +204,12 @@ const AnimalParadeCounter = () => {
                 </div>
               ))}
               
-              {/* Water below bridge */}
               <div className="absolute -bottom-4 left-0 right-0 h-8 bg-blue-400 rounded-b-lg">
                 <div className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-b-lg animate-pulse" />
               </div>
             </div>
           </div>
 
-          {/* Animal Grid */}
           {gameState !== 'instruction' && (
             <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 mb-6">
               {animalGrid.map((animal, index) => (
@@ -254,14 +233,12 @@ const AnimalParadeCounter = () => {
                   >
                     {animal.emoji}
                     
-                    {/* Number for selected animals */}
                     {selectedAnimals.includes(index) && (
                       <div className="absolute -top-2 -right-2 bg-green-500 text-white text-lg font-bold w-8 h-8 rounded-full flex items-center justify-center">
                         {selectedAnimals.indexOf(index) + 1}
                       </div>
                     )}
                     
-                    {/* X for wrong attempts */}
                     {wrongAttempts.includes(index) && (
                       <div className="absolute -top-2 -right-2 bg-red-500 text-white text-lg font-bold w-6 h-6 rounded-full flex items-center justify-center">
                         ✗
@@ -269,7 +246,6 @@ const AnimalParadeCounter = () => {
                     )}
                   </button>
                   
-                  {/* Sound speech bubble */}
                   <div 
                     id={`sound-${index}`}
                     className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-white border-2 border-purple-400 rounded-lg px-3 py-2 text-sm font-bold text-purple-700 hidden z-10 whitespace-nowrap"
@@ -282,7 +258,6 @@ const AnimalParadeCounter = () => {
             </div>
           )}
 
-          {/* Game Status */}
           <div className="text-center">
             {gameState === 'celebrating' && (
               <div className="text-center">
@@ -318,7 +293,6 @@ const AnimalParadeCounter = () => {
           </div>
         </div>
 
-        {/* Instructions */}
         <div className="bg-purple-100 rounded-2xl p-4 text-center">
           <h3 className="text-xl font-bold text-purple-800 mb-2">How to Play:</h3>
           <p className="text-purple-700">
@@ -326,7 +300,6 @@ const AnimalParadeCounter = () => {
           </p>
         </div>
 
-        {/* Progress Indicator */}
         <div className="mt-4 text-center">
           <div className="text-sm text-purple-600">
             Challenge: Select {targetCount} out of {targetAnimalsAvailable} available {targetAnimal?.name}s • Level {currentLevel}
