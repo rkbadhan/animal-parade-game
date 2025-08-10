@@ -55,6 +55,7 @@ const AnimalParadeCounter = () => {
         clearTimeout(countdownRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countdown, gameState, audioEnabled]);
 
   const speak = (text, rate = 1) => {
@@ -239,9 +240,7 @@ const AnimalParadeCounter = () => {
     }
   };
 
-  const restartLevel = () => {
-    generateChallenge();
-  };
+
 
   const getDifficultyText = () => {
     if (currentLevel <= 2) return "Beginner";
